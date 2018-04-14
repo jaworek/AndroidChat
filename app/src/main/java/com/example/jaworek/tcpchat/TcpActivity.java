@@ -20,6 +20,7 @@ public class TcpActivity extends Chat {
     public PrintStream bw;
 
     EditText e;
+    Button b;
     TextView t;
 
     int portNumber;
@@ -41,10 +42,11 @@ public class TcpActivity extends Chat {
                     str = cs + "\r\n" + s;
 
                     t.post(new Runnable() {
-                        public void run() {
-                            t.setText(str);
-                        }
-                    });
+                               public void run() {
+                                   t.setText(str);
+                               }
+                           }
+                    );
                 }
             } catch (IOException e) {
                 Log.e(getClass().getName(), e.getMessage());
@@ -61,23 +63,25 @@ public class TcpActivity extends Chat {
         t.setMovementMethod(new ScrollingMovementMethod());
         e = findViewById(R.id.editText);
 
-        portNumber = 4455;
-        ipAddress = "10.0.2.2";
-//        ipAddress = "194.81.104.173";
+        portNumber = Globals.port;
+        ipAddress = Globals.ip;
+        // Change this to the IP address of your computer OR “10.0.2.2”(Gateway to 127.0.0.1 of host)
 
-        Button send1 = findViewById(R.id.button);
-        send1.setOnClickListener(new View.OnClickListener() {
+
+        b = findViewById(R.id.button);
+        b.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 new Thread() {
                     public void run() {
                         String s = e.getText().toString();
-                        bw.println(s);
+                        bw.println(Globals.username + ": " + s);
+                        e.setText("");
                     }
                 }.start();
             }
         });
 
-        Thread t = new Thread(new TcpActivity.SocketListener());
+        Thread t = new Thread(new SocketListener());
         t.start();
     }
 }

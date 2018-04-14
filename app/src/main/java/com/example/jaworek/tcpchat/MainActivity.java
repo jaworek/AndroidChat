@@ -26,6 +26,8 @@ public class MainActivity extends AppCompatActivity {
     EditText portNumber;
     EditText username;
 
+    TextView error;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -38,55 +40,42 @@ public class MainActivity extends AppCompatActivity {
         portNumber = findViewById(R.id.editText2);
         username = findViewById(R.id.editText3);
 
+        error = findViewById(R.id.errorView);
+
         buttonTcp.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                Globals.ip = ipAddress.getText().toString();
-                Globals.port = Integer.parseInt(portNumber.getText().toString());
-                Globals.username = username.getText().toString();
-
-                Intent i = new Intent(MainActivity.this, TcpActivity.class);
-                startActivity(i);
-
+                if (startChat()) {
+                    Intent i = new Intent(MainActivity.this, TcpActivity.class);
+                    startActivity(i);
+                    finish();
+                }
             }
         });
 
         buttonUdp.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                Globals.ip = ipAddress.getText().toString();
-                Globals.port = Integer.parseInt(portNumber.getText().toString());
-                Globals.username = username.getText().toString();
-
-                Intent i = new Intent(MainActivity.this, UdpActivity.class);
-                startActivity(i);
+                if (startChat()) {
+                    Intent i = new Intent(MainActivity.this, UdpActivity.class);
+                    startActivity(i);
+                    finish();
+                }
             }
         });
     }
 
-//    public boolean onCreateOptionsMenu(Menu menu) {
-//        super.onCreateOptionsMenu(menu);
-//        MenuItem item1 = menu.add(0, 0, Menu.NONE, "Welcome");
-//        MenuItem item2 = menu.add(0, 1, Menu.NONE, "Tcp");
-//        MenuItem item3 = menu.add(0, 2, Menu.NONE, "Udp");
-//
-//        return true;
-//    }
-//
-//    public boolean onOptionsItemSelected(MenuItem item) {
-//        switch (item.getItemId()) {
-//            case 0:
-//                Intent i1 = new Intent(this, MainActivity.class);
-//                startActivity(i1);
-//                return true;
-//            case 1:
-//                Intent i2 = new Intent(this, TcpActivity.class);
-//                startActivity(i2);
-//                return true;
-//            case 2:
-//                Intent i3 = new Intent(this, UdpActivity.class);
-//                startActivity(i3);
-//                return true;
-//            default:
-//                return super.onOptionsItemSelected(item);
-//        }
-//    }
+    public boolean startChat() {
+        if (ipAddress.getText().toString().matches("^(\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}\\.\\d{1,3})")
+                && portNumber.getText().toString().matches("\\d*")
+                && !username.getText().toString().equals("")) {
+            Globals.ip = ipAddress.getText().toString();
+            Globals.port = Integer.parseInt(portNumber.getText().toString());
+            Globals.username = username.getText().toString();
+
+            return true;
+        } else {
+            error.setText("Error");
+        }
+
+        return false;
+    }
 }

@@ -19,6 +19,7 @@ public class UdpActivity extends Chat {
     DatagramSocket socket;
     TextView t;
     EditText e;
+    Button b;
 
     class SocketListener implements Runnable {
         String str;
@@ -35,7 +36,7 @@ public class UdpActivity extends Chat {
                     String s = new String(packet.getData());
 
                     CharSequence cs = t.getText();
-                    str = cs + "J> " + s + "\n";
+                    str = cs + "Client> " + s + "\n";
 
                     t.post(new Runnable() {
                                public void run() {
@@ -65,8 +66,8 @@ public class UdpActivity extends Chat {
         t = findViewById(R.id.textView);
         t.setMovementMethod(new ScrollingMovementMethod());
 
-        Button send1 = findViewById(R.id.button);
-        send1.setOnClickListener(new View.OnClickListener() {
+        b = findViewById(R.id.button);
+        b.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 String s = e.getText().toString();
                 t.setText(t.getText() + Globals.username + "> " + s + "\r\n");
@@ -75,8 +76,9 @@ public class UdpActivity extends Chat {
                     byte[] buf;
 
                     buf = s.getBytes();
-                    InetAddress address = InetAddress.getByName("10.0.2.2"); // Change this to the IP address of your computer OR “10.0.2.2”(Gateway to 127.0.0.1 of host)
-                    final DatagramPacket packet = new DatagramPacket(buf, buf.length, address, 5678);
+                    // Change this to the IP address of your computer OR “10.0.2.2”(Gateway to 127.0.0.1 of host)
+                    InetAddress address = InetAddress.getByName(Globals.ip);
+                    final DatagramPacket packet = new DatagramPacket(buf, buf.length, address, Globals.port);
 
                     new Thread() {
                         public void run() {
